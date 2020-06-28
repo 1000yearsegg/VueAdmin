@@ -28,7 +28,7 @@
             tabindex="2"
             autocomplete="on"
             @keyup.native="checkCapslock"
-@blur="capsTooltip = false"
+            @blur="capsTooltip = false"
             @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
@@ -67,125 +67,130 @@
 
 <script>
 import {
-  validUsername
+    validUsername
 } from '@/utils/validate'
 
 export default {
-  name: 'Login',
-  components: {
-  },
-  data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
-    return {
-      loginForm: {
-        username: 'admin',
-        password: '111111'
-      },
-      loginRules: {
-        username: [{
-          required: true,
-          trigger: 'blur',
-          validator: validateUsername
-        }],
-        password: [{
-          required: true,
-          trigger: 'blur',
-          validator: validatePassword
-        }]
-      },
-      passwordType: 'password',
-      capsTooltip: false,
-      loading: false,
-      showDialog: false,
-      redirect: undefined,
-      otherQuery: {}
-    }
-  },
-  watch: {
-    $route: {
-      handler: function(route) {
-        const query = route.query
-        if (query) {
-          this.redirect = query.redirect
-          this.otherQuery = this.getOtherQuery(query)
+    name: 'Login',
+    components: {},
+    data() {
+        const validateUsername = (rule, value, callback) => {
+            if (!validUsername(value)) {
+                callback(new Error('Please enter the correct user name'))
+            } else {
+                callback()
+            }
         }
-      },
-      immediate: true
-    }
-  },
-  mounted() {
-    if (this.loginForm.username === '') {
-      this.$refs.username.focus()
-    } else if (this.loginForm.password === '') {
-      this.$refs.password.focus()
-    }
-  },
-  methods: {
-    checkCapslock({ shiftKey, key } = {}) {
-      if (key && key.length === 1) {
-        if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
-          this.capsTooltip = true
-        } else {
-          this.capsTooltip = false
+        const validatePassword = (rule, value, callback) => {
+            if (value.length < 3) {
+                callback(new Error('The password can not be less than 6 digits'))
+            } else {
+                callback()
+            }
         }
-      }
-      if (key === 'CapsLock' && this.capsTooltip === true) {
-        this.capsTooltip = false
-      }
+        return {
+            loginForm: {
+                username: 'admin',
+                password: '111111'
+            },
+            loginRules: {
+                username: [{
+                    required: true,
+                    trigger: 'blur',
+                    validator: validateUsername
+                }],
+                password: [{
+                    required: true,
+                    trigger: 'blur',
+                    validator: validatePassword
+                }]
+            },
+            passwordType: 'password',
+            capsTooltip: false,
+            loading: false,
+            showDialog: false,
+            redirect: undefined,
+            otherQuery: {}
+        }
     },
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+    watch: {
+        $route: {
+            handler: function(route) {
+                const query = route.query
+                if (query) {
+                    this.redirect = query.redirect
+                    this.otherQuery = this.getOtherQuery(query)
+                }
+            },
+            immediate: true
+        }
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({
-                path: this.redirect || '/',
-                query: this.otherQuery
-              })
-              this.loading = false
+    mounted() {
+        if (this.loginForm.username === '') {
+            this.$refs.username.focus()
+        } else if (this.loginForm.password === '') {
+            this.$refs.password.focus()
+        }
+    },
+    methods: {
+        checkCapslock({
+            shiftKey,
+            key
+        } = {}) {
+            if (key && key.length === 1) {
+                if (shiftKey && (key >= 'a' && key <= 'z') || !shiftKey && (key >= 'A' && key <= 'Z')) {
+                    this.capsTooltip = true
+                } else {
+                    this.capsTooltip = false
+                }
+            }
+            if (key === 'CapsLock' && this.capsTooltip === true) {
+                this.capsTooltip = false
+            }
+        },
+        showPwd() {
+            if (this.passwordType === 'password') {
+                this.passwordType = ''
+            } else {
+                this.passwordType = 'password'
+            }
+            this.$nextTick(() => {
+                this.$refs.password.focus()
             })
-            .catch(() => {
-              this.loading = false
+        },
+        handleLogin() {
+            this.$refs.loginForm.validate(valid => {
+                if (valid) {
+                    this.loading = true
+                    this.$store.dispatch('user/login', this.loginForm)
+                        .then(() => {
+                            console.log('this.redirect-------', this.redirect)
+                            console.log('this.otherQuery-------', this.otherQuery)
+                            this.$router.push({
+                                path: this.redirect || '/',
+                                query: this.otherQuery
+                            })
+                            this.loading = false
+                        })
+                        .catch((e) => {
+                            console.log('ee-------', e)
+                            this.loading = false
+                        })
+                } else {
+                    console.log('error submit!!')
+                    return false
+                }
             })
-        } else {
-          console.log('error submit!!')
-          return false
+        },
+        getOtherQuery(query) {
+            return Object.keys(query).reduce((acc, cur) => {
+                if (cur !== 'redirect') {
+                    acc[cur] = query[cur]
+                }
+                return acc
+            }, {})
         }
-      })
-    },
-    getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== 'redirect') {
-          acc[cur] = query[cur]
-        }
-        return acc
-      }, {})
     }
-  }
 }
 </script>
 

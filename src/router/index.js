@@ -57,6 +57,30 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
     {
+        path: '/person',
+        component: Layout,
+        redirect: '/person/user/list',
+        name: 'Person',
+        meta: {
+            title: '人员管理',
+            icon: 'documentation'
+        },
+        children: [
+            {
+                path: 'role/list',
+                component: () => import('@/views/error-page/404'),
+                name: 'RoleList',
+                meta: { title: '角色管理', icon: 'list', noCache: true }
+            },
+            {
+                path: 'user/lists',
+                component: () => import('@/views/user/list'),
+                name: 'UserList',
+                meta: { title: '用户管理', icon: 'list', noCache: true }
+            }
+        ]
+    },
+    {
         path: '/book',
         component: Layout,
         redirect: '/book/list',
@@ -84,17 +108,6 @@ export const asyncRoutes = [
                 name: 'EditBook',
                 meta: { title: '编辑图书', noCache: true, activeMenu: '/book/list' },
                 hidden: true
-            }
-        ]
-    },
-    {
-        path: 'external-link',
-        component: Layout,
-        name: 'link1',
-        children: [
-            {
-                path: 'https://coding.imooc.com/class/285.html',
-                meta: { title: '小慕读书中后台', icon: 'link' }
             }
         ]
     },

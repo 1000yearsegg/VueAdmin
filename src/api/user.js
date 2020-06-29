@@ -21,3 +21,15 @@ export function logout() {
         method: 'post'
     })
 }
+
+/**
+ * 获取用户列表
+ * @param {[object]} params 请求参数
+ */
+export function listUser(params) {
+    return request({
+        url: '/user/list',
+        method: 'get',
+        params
+    })
+}

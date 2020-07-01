@@ -140,7 +140,7 @@ export default {
         },
         refresh() {
             this.$router.push({
-                path: '/person/user/lists',
+                path: '/person/user/list',
                 query: this.listQuery
             })
         },
@@ -186,7 +186,7 @@ export default {
             this.handleFilter()
         },
         handleCreate() {
-            this.$router.push('/book/create')
+            this.$router.push('/person/user/form')
         },
         handleUpdate(row) {
             this.$router.push(`/book/edit/${row.fileName}`)

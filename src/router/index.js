@@ -59,7 +59,7 @@ export const asyncRoutes = [
     {
         path: '/person',
         component: Layout,
-        redirect: '/person/user/list',
+        // redirect: '/person/user/list',
         name: 'Person',
         meta: {
             title: '人员管理',
@@ -73,44 +73,60 @@ export const asyncRoutes = [
                 meta: { title: '角色管理', icon: 'list', noCache: true }
             },
             {
-                path: 'user/lists',
+                path: 'user/list',
                 component: () => import('@/views/user/list'),
                 name: 'UserList',
-                meta: { title: '用户管理', icon: 'list', noCache: true }
+                meta: { title: '用户管理', icon: 'list', noCache: true },
+                children: [
+                    {
+                        path: 'user/list',
+                        component: () => import('@/views/user/list'),
+                        name: 'UserList',
+                        meta: { title: '用户列表', icon: 'list', noCache: true }
+                    },
+                    {
+                        path: 'user/list/form',
+                        component: () => import('@/views/user/form'),
+                        name: 'UserForm',
+                        meta: { title: '新增用户', icon: 'edit', noCache: true },
+
+                    }
+                ]
             }
+
         ]
     },
-    {
-        path: '/book',
-        component: Layout,
-        redirect: '/book/list',
-        name: 'Book',
-        meta: {
-            title: '图书管理',
-            icon: 'documentation'
-        },
-        children: [
-            {
-                path: 'list',
-                component: () => import('@/views/book/list'),
-                name: 'BookList',
-                meta: { title: '图书列表', icon: 'list', noCache: true }
-            },
-            {
-                path: 'create',
-                component: () => import('@/views/book/create'),
-                name: 'CreateBook',
-                meta: { title: '添加图书', icon: 'edit', noCache: true }
-            },
-            {
-                path: 'edit/:fileName(\\w+)',
-                component: () => import('@/views/book/edit'),
-                name: 'EditBook',
-                meta: { title: '编辑图书', noCache: true, activeMenu: '/book/list' },
-                hidden: true
-            }
-        ]
-    },
+    // {
+    //     path: '/book',
+    //     component: Layout,
+    //     redirect: '/book/list',
+    //     name: 'Book',
+    //     meta: {
+    //         title: '图书管理',
+    //         icon: 'documentation'
+    //     },
+    //     children: [
+    //         {
+    //             path: 'list',
+    //             component: () => import('@/views/book/list'),
+    //             name: 'BookList',
+    //             meta: { title: '图书列表', icon: 'list', noCache: true }
+    //         },
+    //         {
+    //             path: 'create',
+    //             component: () => import('@/views/book/create'),
+    //             name: 'CreateBook',
+    //             meta: { title: '添加图书', icon: 'edit', noCache: true }
+    //         },
+    //         {
+    //             path: 'edit/:fileName(\\w+)',
+    //             component: () => import('@/views/book/edit'),
+    //             name: 'EditBook',
+    //             meta: { title: '编辑图书', noCache: true, activeMenu: '/book/list' },
+    //             hidden: true
+    //         }
+    //     ]
+    // },
     // 404 page must be placed at the end !!!
     { path: '*', redirect: '/404', hidden: true }
 ]

@@ -42,6 +42,7 @@
 // 例如：import 《组件名称》 from '《组件路径》';
 import {
     listUser,
+    deleteUser
 } from '@/api/user'
 import waves from '@/directive/waves'
 import {
@@ -89,7 +90,8 @@ export default {
     // 监听属性 类似于data概念
     computed: {},
     // 监控data中的数据变化
-    watch: {},
+    watch: {
+    },
     // 生命周期 - 创建完成（可以访问当前this实例）
     created() {
         this.parseQuery()
@@ -140,9 +142,10 @@ export default {
         },
         refresh() {
             this.$router.push({
-                path: '/person/user/list',
+                path: '/user/list',
                 query: this.listQuery
-            })
+            });
+            this.getList();
         },
         getList() {
             this.listLoading = true
@@ -186,18 +189,18 @@ export default {
             this.handleFilter()
         },
         handleCreate() {
-            this.$router.push('/person/user/form')
+            this.$router.push('/user/add')
         },
         handleUpdate(row) {
-            this.$router.push(`/book/edit/${row.fileName}`)
+            this.$router.push(`/user/edit/${row.username}`)
         },
         handleDelete(row) {
-            this.$confirm('此操作将永久删除该电子书, 是否继续?', '提示', {
+            this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                deleteBook(row.fileName).then(response => {
+                deleteUser(row.username).then(response => {
                     this.$notify({
                         title: '成功',
                         message: response.msg || '删除成功',

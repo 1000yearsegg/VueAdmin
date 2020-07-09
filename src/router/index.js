@@ -57,43 +57,34 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
     {
-        path: '/person',
+        path: '/user',
         component: Layout,
-        // redirect: '/person/user/list',
-        name: 'Person',
+        name: 'User',
         meta: {
-            title: '人员管理',
+            title: '用户管理',
             icon: 'documentation'
         },
         children: [
             {
-                path: 'role/list',
-                component: () => import('@/views/error-page/404'),
-                name: 'RoleList',
-                meta: { title: '角色管理', icon: 'list', noCache: true }
-            },
-            {
-                path: 'user/list',
+                path: 'list',
                 component: () => import('@/views/user/list'),
                 name: 'UserList',
                 meta: { title: '用户管理', icon: 'list', noCache: true },
-                children: [
-                    {
-                        path: 'user/list',
-                        component: () => import('@/views/user/list'),
-                        name: 'UserList',
-                        meta: { title: '用户列表', icon: 'list', noCache: true }
-                    },
-                    {
-                        path: 'user/list/form',
-                        component: () => import('@/views/user/form'),
-                        name: 'UserForm',
-                        meta: { title: '新增用户', icon: 'edit', noCache: true },
-
-                    }
-                ]
+            },
+            {
+                path: 'add',
+                component: () => import('@/views/user/form'),
+                name: 'UserAdd',
+                meta: { title: '新增用户', icon: 'edit', noCache: true, activeMenu: '/user/list' },
+                hidden: true
+            },
+            {
+                path: 'edit/:userName',
+                component: () => import('@/views/user/form'),
+                name: 'UserEdit',
+                meta: { title: '编辑用户', icon: 'edit', noCache: true, activeMenu: '/user/list' },
+                hidden: true
             }
-
         ]
     },
     // {

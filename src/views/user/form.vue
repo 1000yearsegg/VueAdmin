@@ -17,7 +17,7 @@
             <el-input v-model="form.nickname"></el-input>
         </el-form-item>
         <el-form-item label="头像">
-            <el-upload action="https://jsonplaceholder.typicode.com/posts/" :multiple="true" accept="image/*" :on-success="avatarUploadChange" :on-remove="avatarUploadChange" :file-list="avatar" list-type="picture">
+            <el-upload action="http://www.vueadmin.com:9000/user/uploadAvatar" :limit="1" :multiple="true" :show-file-list="true" accept="image/*" :on-change="avatarUploadChange" :on-remove="avatarUploadChange" :file-list="avatarFileListShow" list-type="picture">
                 <el-button type="primary">点击上传</el-button>
             </el-upload>
         </el-form-item>
@@ -62,6 +62,8 @@ export default {
                 role: '', // 角色
                 avatar: ''
             },
+            avatarFileListShow: [], // 头像附件展示列表
+            avatarFileList: [], // 头像附件model
             rules: { // 表单验证规则
                 username: [{
                     required: true,
@@ -158,6 +160,10 @@ export default {
         addUser() {
             const self = this;
 
+            if(self.avatarFileList && self.avatarFileList.length > 0) {
+                self.form.avatar = JSON.stringify((self.avatarFileList)[0]);
+            }
+            
             self.addQuery = self.form;
             addUser(self.addQuery).then(response => {
                 if(response.code === 0) {
@@ -170,6 +176,13 @@ export default {
          */
         editUser() {
             const self = this;
+
+            console.log('self.avatarFileList----', self.avatarFileList);
+            console.log('self.avatarFileListShow----', self.avatarFileListShow);
+
+            if(self.avatarFileList && self.avatarFileList.length > 0) {
+                self.form.avatar = JSON.stringify((self.avatarFileList)[0]);
+            }
 
             self.editQuery = self.form;
             editUser(self.editQuery).then(response => {
@@ -187,6 +200,15 @@ export default {
             getUser(userName).then(response => {
                 if(response.code === 0) {
                      self.form = response.data;
+                    
+                    try {
+                        let fileList = [];
+                        fileList.push(JSON.parse(self.form.avatar))
+                        self.avatarFileListShow = fileList;
+                        console.log("getUser -> self.avatarFileListShow", self.avatarFileListShow)
+                    } catch (error) {
+                        console.log('回显用户头像失败', error);
+                    }
                 }
             })
         },
@@ -200,20 +222,22 @@ export default {
             console.log("avatarUploadChange -> fileList", fileList)
             console.log("avatarUploadChange -> file", file)
 
-            self.fileList= [];
-            // fileList.forEach(function (el, index) {
-            //     if (el.response && el.response.hasOwnProperty('code') && el.response.code == 0) {
-            //         var obj = new Object();
-            //         obj.name = el.response.data.name;
-            //         obj.url = el.response.data.url;
-            //         self.fileList.push(obj);
-            //     } else {
-            //         var obj = new Object();
-            //         obj.name = el.name;
-            //         obj.url = el.url;
-            //         self.fileList.push(obj);
-            //     }
-            // });
+            self.avatarFileList = [];
+            fileList.forEach(function (el, index) {
+                if (el.response && el.response.code == 0) {
+                    var obj = new Object();
+                    obj.path = el.response.data.path;
+                    obj.url = el.response.data.url;
+                    obj.name = el.response.data.name;
+                    self.avatarFileList.push(obj);
+                } else {
+                    var obj = new Object();
+                    obj.path = el.path;
+                    obj.url = el.url;
+                    obj.name = el.name;
+                    self.avatarFileList.push(obj);
+                }
+            });
         }
     }
 }

@@ -87,6 +87,41 @@ export const asyncRoutes = [
             }
         ]
     },
+    {
+        path: '/unit',
+        component: Layout,
+        name: 'Unit',
+        meta: {
+            title: '组件管理',
+            icon: 'documentation'
+        },
+        children: [
+            {
+                path: 'list',
+                component: () => import('@/views/user/list'),
+                name: 'UserList',
+                meta: { title: '附件上传', icon: 'list', noCache: true },
+            },
+            {
+                path: 'add',
+                component: () => import('@/views/user/form'),
+                name: 'UserAdd',
+                meta: { title: '富文本编辑器', icon: 'edit', noCache: true }
+            },
+            {
+                path: 'edit/:userName',
+                component: () => import('@/views/user/form'),
+                name: 'UserEdit',
+                meta: { title: '视频', icon: 'edit', noCache: true }
+            },
+            {
+                path: 'edit/:userName',
+                component: () => import('@/views/user/form'),
+                name: 'UserEdit',
+                meta: { title: '图表', icon: 'edit', noCache: true }
+            },
+        ]
+    },
     // {
     //     path: '/book',
     //     component: Layout,
